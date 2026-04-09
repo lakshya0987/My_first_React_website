@@ -1,55 +1,37 @@
-import { useParams, Link } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 import products from "../products";
-import Footer from "../components/Footer";
 
-function ProductDetails() {
+const ProductDetails = ({ addToCart }) => {
   const { id } = useParams();
 
-  const product = products.find((item) => String(item.id) === String(id));
+  const product = products.find((item) => item.id === Number(id));
 
   if (!product) {
-    return <h2 className="error-text">Product not found</h2>;
+    return <h2>Product not found</h2>;
   }
 
   return (
-    <>
-      <div className="details-wrapper">
-        <div className="details-container">
-          <div className="left-section">
-            <div className="main-image-box">
-              <img
-                src={product.thumbnail}
-                alt={product.title}
-                className="main-image"
-              />
-            </div>
-          </div>
-
-          <div className="right-section">
-            <p className="product-category">{product.category}</p>
-            <h1 className="product-title-details">{product.title}</h1>
-
-            <div className="rating-row">
-              <span className="rating">⭐ {product.rating}</span>
-              <span className="review-text">Product Rating</span>
-            </div>
-
-            <div className="price-row">
-              <span className="new-price">₹{product.price}</span>
-            </div>
-
-            <p className="product-description">{product.description}</p>
-
-            <Link to="/" className="back-btn">
-              Back to Products
-            </Link>
-          </div>
-        </div>
+    <div className="product-details-container">
+      <div className="product-details-image">
+        <img src={product.thumbnail} alt={product.title} />
       </div>
 
-      <Footer />
-    </>
+      <div className="product-details-info">
+        <h1>{product.title}</h1>
+        <p className="price">₹{product.price}</p>
+        <p className="rating">⭐ {product.rating}</p>
+        <p className="description">{product.description}</p>
+
+        <button
+          className="add-to-cart-btn"
+          onClick={() => addToCart(product)}
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
   );
-}
+};
 
 export default ProductDetails;

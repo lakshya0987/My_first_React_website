@@ -3,12 +3,18 @@ import products from "../products";
 import Sidebar from "../components/Sidebar";
 import ProductsList from "../components/ProductsList";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
-function Home() {
+const Home = ({ addToCart }) => {
   const [search, setSearch] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedRating, setSelectedRating] = useState(0);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.title
@@ -40,21 +46,12 @@ function Home() {
 
   return (
     <>
+      <Navbar toggleSidebar={toggleSidebar} setSearch={setSearch} />
+
       <div className="products-page">
-        <h1>Our Products</h1>
-
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search product..."
-            className="search-bar"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
         <div className="shop-layout">
           <Sidebar
+            className={showSidebar ? "sidebar show" : "sidebar"}
             minPrice={minPrice}
             maxPrice={maxPrice}
             setMinPrice={setMinPrice}
@@ -63,13 +60,16 @@ function Home() {
             setSelectedRating={setSelectedRating}
           />
 
-          <ProductsList products={filteredProducts} />
+          <ProductsList
+            products={filteredProducts}
+            addToCart={addToCart}
+          />
         </div>
       </div>
 
       <Footer />
     </>
   );
-}
+};
 
 export default Home;

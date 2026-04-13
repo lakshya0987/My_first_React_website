@@ -35,7 +35,7 @@ const products = [
     price: 1200,
     rating: 3,
     thumbnail:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
+      "https://i.pinimg.com/1200x/4e/9c/15/4e9c1565b5e0473aae1d61de8e4e8e6b.jpg",
     description: "Durable and spacious bag for laptop and accessories.",
     category: "Accessories",
   },

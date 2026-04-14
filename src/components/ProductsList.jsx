@@ -1,65 +1,63 @@
 import { Link } from "react-router-dom";
 
-const ProductsList = ({ products, addToCart, cart }) => {
+function ProductsList({ products, addToCart, cart }) {
   return (
-    <div className="products-section">
-      <div className="products-grid">
-        {products && products.length > 0 ? (
-          products.map((product) => {
+    <section className="products-section">
+      <div className="products-header">
+        <h1>Featured Products</h1>
+        <p>{products.length} product(s) found</p>
+      </div>
 
-            const isAdded = cart?.some(
-              (item) => item.id === product.id
-            );
+      {products.length === 0 ? (
+        <div className="no-products-box">
+          <h2>No products found</h2>
+          <p>Try changing your search or filter values.</p>
+        </div>
+      ) : (
+        <div className="products-grid">
+          {products.map((product) => {
+            const isAdded = cart.some((item) => item.id === product.id);
 
             return (
               <div className="product-card" key={product.id}>
-
                 <Link to={`/product/${product.id}`} className="product-link">
-
                   <div className="product-image-box">
                     <img
-                      src={product.thumbnail}
+                      src={product.image}
                       alt={product.title}
                       className="product-image"
                     />
                   </div>
 
                   <div className="product-info">
-                    <h3 className="product-title-list">
-                      {product.title}
-                    </h3>
+                    <h3 className="product-title">{product.title}</h3>
 
-                    <p className="product-desc">
-                      {product.description}
-                    </p>
+                    <p className="product-description">{product.description}</p>
 
-                    <p className="extra-text">
-                      Free delivery | 7 days return
-                    </p>
+                    <p className="extra-text">Free delivery | 7 days return</p>
 
-                    <p className="product-price">
-                      ₹{product.price}
-                    </p>
+                    <div className="product-bottom">
+                      <h2 className="product-price">₹{product.price}</h2>
+                      <span className="product-rating">
+                        ⭐ {product.rating.toFixed(1)}
+                      </span>
+                    </div>
                   </div>
-
                 </Link>
 
                 <button
-                  className={`add-to-cart-btn ${isAdded ? "added" : ""}`}
+                  className={`add-cart-btn ${isAdded ? "added-btn" : ""}`}
                   onClick={() => addToCart(product)}
                 >
-                  {isAdded ? "Added" : "Add to Cart"}
+                  {isAdded ? "Added to Cart" : "Add to Cart"}
                 </button>
-
               </div>
             );
-          })
-        ) : (
-          <h2>No products found</h2>
-        )}
-      </div>
-    </div>
+          })}
+        </div>
+      )}
+    </section>
   );
-};
+}
 
 export default ProductsList;

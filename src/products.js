@@ -2,82 +2,90 @@ const products = [
   {
     id: 1,
     title: "Wireless Headphones",
+    description: "High quality wireless headphones with deep bass sound.",
     price: 2500,
     rating: 4.5,
+    category: "Audio",
+    stock: 12,
     thumbnail:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
-    description: "High quality wireless headphones with deep bass sound.",
-    category: "Electronics",
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800",
   },
   {
     id: 2,
     title: "Smart Watch",
-    price: 4200,
-    rating: 2,
-    thumbnail:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",
     description: "Stylish smartwatch with fitness and notification features.",
-    category: "Wearables",
+    price: 4200,
+    rating: 4.3,
+    category: "Wearable",
+    stock: 8,
+    thumbnail:
+      "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800",
   },
   {
     id: 3,
     title: "Bluetooth Speaker",
-    price: 1800,
-    rating: 4.0,
-    thumbnail:
-      "https://images.unsplash.com/photo-1589003077984-894e133dabab?w=600",
     description: "Portable speaker with clear sound and long battery life.",
+    price: 1800,
+    rating: 4.1,
     category: "Audio",
+    stock: 10,
+    thumbnail:
+      "https://images.unsplash.com/photo-1589003077984-894e133dabab?w=800",
   },
   {
     id: 4,
     title: "Laptop Bag",
-    price: 1200,
-    rating: 3,
-    thumbnail:
-      "https://i.pinimg.com/1200x/4e/9c/15/4e9c1565b5e0473aae1d61de8e4e8e6b.jpg",
     description: "Durable and spacious bag for laptop and accessories.",
+    price: 1200,
+    rating: 4.0,
     category: "Accessories",
+    stock: 15,
+    thumbnail:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
   },
   {
     id: 5,
     title: "Gaming Mouse",
-    price: 950,
-    rating: 4.3,
-    thumbnail:
-      "https://i.pinimg.com/736x/4d/1d/a8/4d1da885248ced0753cfe75b887fe7a9.jpg",
     description: "Ergonomic gaming mouse with RGB lighting.",
-    category: "Gaming",
+    price: 950,
+    rating: 4.4,
+    category: "Computer",
+    stock: 20,
+    thumbnail:
+      "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800",
   },
   {
     id: 6,
     title: "Keyboard",
-    price: 1500,
-    rating: 5,
-    thumbnail:
-      "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=600",
     description: "Mechanical keyboard for comfortable typing.",
+    price: 1500,
+    rating: 4.2,
     category: "Computer",
+    stock: 11,
+    thumbnail:
+      "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800",
   },
   {
     id: 7,
     title: "Mobile Stand",
+    description: "Adjustable mobile stand for desk use.",
     price: 400,
     rating: 3.9,
+    category: "Accessories",
+    stock: 22,
     thumbnail:
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",
-    description: "Adjustable mobile stand for desk use.",
-    category: "Mobile Accessories",
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800",
   },
   {
     id: 8,
     title: "Power Bank",
+    description: "Fast charging power bank with large battery capacity.",
     price: 2200,
     rating: 4.6,
-    thumbnail:
-      "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600",
-    description: "Fast charging power bank with large battery capacity.",
     category: "Electronics",
+    stock: 9,
+    thumbnail:
+      "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=800",
   },
 ];
 

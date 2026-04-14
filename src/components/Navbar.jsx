@@ -1,56 +1,48 @@
-import React, { useState } from "react";
-import logo from "../assets/logo.jpg";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Navbar = ({ toggleSidebar, setSearch }) => {
-  const [input, setInput] = useState("");
+function Navbar({ search, setSearch, totalCartItems }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+
+    if (location.pathname !== "/") {
+      navigate("/");
+    }
+  };
 
   return (
-    <div className="navbar">
-      <div className="nav-container">
-
-        {/* LOGO */}
-        <div className="logo" onClick={() => navigate("/")}>
-          <img src={logo} alt="logo" />
-        </div>
-
-        {/* NAV LINKS */}
-        <ul className="nav-links">
-          <li onClick={() => navigate("/")}>Home</li>
-          <li onClick={() => navigate("/about")}>About</li>
-          <li onClick={() => navigate("/contact")}>Contact</li>
-          <li onClick={() => navigate("/address")}>Address</li>
-        </ul>
-
-        {/* SEARCH */}
-        <div className="nav-search">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              setSearch(e.target.value);
-            }}
-          />
-          <button type="button">🔍</button>
-        </div>
-
-        {/* RIGHT SECTION */}
-        <div className="nav-right">
-          <div className="cart" onClick={() => navigate("/cart")}>
-            🛒
-          </div>
-
-          <div className="hamburger" onClick={toggleSidebar}>
-            ☰
-          </div>
-        </div>
-
+    <header className="navbar">
+      <div className="nav-logo">
+        <Link to="/">Canva</Link>
       </div>
-    </div>
+
+      <nav className="nav-links">
+        <Link to="/">Home</Link>
+        <a href="#footer">About</a>
+        <a href="#footer">Contact</a>
+        <a href="#footer">Address</a>
+      </nav>
+
+      <div className="nav-search">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <span className="search-icon">🔍</span>
+      </div>
+
+      <Link to="/cart" className="cart-link">
+        <span className="cart-icon">🛒</span>
+        {totalCartItems > 0 && (
+          <span className="cart-badge">{totalCartItems}</span>
+        )}
+      </Link>
+    </header>
   );
-};
+}
 
 export default Navbar;

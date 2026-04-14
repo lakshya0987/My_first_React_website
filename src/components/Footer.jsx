@@ -1,44 +1,23 @@
 function Footer() {
   return (
-    <footer className="footer-dark">
-      <div className="footer-container">
-        <div className="footer-box">
-          <h3>Links</h3>
-          <p className="highlight">2014 Pictures</p>
-        </div>
-
-        <div className="footer-box">
-          <h3>Stay tuned</h3>
-          <p>Connect with us and stay in the loop.</p>
-
-          <div className="social-icons">
-            <span className="icon">T</span>
-            <span className="icon">F</span>
-          </div>
-        </div>
-
-        <div className="footer-box">
-          <h3>Email updates</h3>
-          <p>Be the first to hear about our offers and announcements.</p>
-
-          <div className="email-box">
-            <input type="text" placeholder="email" />
-          </div>
-        </div>
-
-        <div className="footer-box">
-          <h3>Contact us</h3>
-          <p>Questions? We&apos;ve got answers. Try us.</p>
-
-          <button className="email-btn">EMAIL US</button>
-        </div>
+    <footer className="footer" id="footer">
+      <div className="footer-box">
+        <h2>Canva Store</h2>
+        <p>Your smart shopping partner for quality products.</p>
       </div>
 
-      <div className="footer-bottom">
-        <p>
-          Copyright © — <span className="highlight">The Next Web</span>, Inc.
-          Photography © <span className="highlight">Julia de Boer</span>.
-        </p>
+      <div className="footer-box">
+        <h3>Quick Links</h3>
+        <p>Home</p>
+        <p>Products</p>
+        <p>Cart</p>
+      </div>
+
+      <div className="footer-box">
+        <h3>Contact</h3>
+        <p>Email: support@canvastore.com</p>
+        <p>Phone: +91 98765 43210</p>
+        <p>Address: Phagwara, Punjab, India</p>
       </div>
     </footer>
   );

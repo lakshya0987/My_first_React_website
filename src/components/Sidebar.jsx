@@ -1,65 +1,64 @@
 function Sidebar({
-  className,
-  minPrice,
-  maxPrice,
-  setMinPrice,
-  setMaxPrice,
   selectedRating,
   setSelectedRating,
+  minPrice,
+  setMinPrice,
+  maxPrice,
+  setMaxPrice,
 }) {
-  const showRangeText =
-    minPrice !== "" || maxPrice !== ""
-      ? `₹${minPrice || 0} - ₹${maxPrice || "Any"}`
-      : "₹0 - ₹Any";
-
-  const invalidRange =
-    minPrice !== "" &&
-    maxPrice !== "" &&
-    Number(minPrice) > Number(maxPrice);
+  const ideas = [
+    "Philips",
+    "All-in-one",
+    "Professional",
+    "Waterproof",
+  ];
 
   return (
-    <div className={className}>
+    <aside className="sidebar">
       <div className="sidebar-section">
-        <h3>Popular Shopping Ideas</h3>
-        <p>Philips</p>
-        <p>All-in-one</p>
-        <p>Professional</p>
-        <p>Waterproof</p>
+        <h2>Popular Shopping Ideas</h2>
+        <ul className="ideas-list">
+          {ideas.map((idea) => (
+            <li key={idea}>{idea}</li>
+          ))}
+        </ul>
       </div>
 
       <div className="sidebar-section">
-        <h3>Customer Reviews</h3>
-
-        <div className="star-row">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <span
+        <h2>Customer Reviews</h2>
+        <div className="rating-options">
+          {[4, 3, 2, 1].map((star) => (
+            <button
               key={star}
-              className={`single-star ${
-                star <= selectedRating ? "active-star" : ""
+              className={`rating-filter-btn ${
+                selectedRating === star ? "active-rating" : ""
               }`}
               onClick={() => setSelectedRating(star)}
             >
-              ★
-            </span>
+              {"★".repeat(star)}
+              {"☆".repeat(5 - star)} & Up
+            </button>
           ))}
-          <span className="review-up-text">&nbsp; & Up</span>
-        </div>
 
-        <p className="clear-rating" onClick={() => setSelectedRating(0)}>
-          Clear Rating Filter
-        </p>
+          <button
+            className="clear-filter-btn"
+            onClick={() => setSelectedRating(0)}
+          >
+            Clear Rating Filter
+          </button>
+        </div>
       </div>
 
       <div className="sidebar-section">
-        <h3>Price</h3>
-
-        <p className="price-range">{showRangeText}</p>
+        <h2>Price</h2>
+        <p className="price-range-text">₹0 - ₹Any</p>
 
         <input
           type="number"
           placeholder="Min Price"
           value={minPrice}
           onChange={(e) => setMinPrice(e.target.value)}
+          className="price-input"
         />
 
         <input
@@ -67,15 +66,20 @@ function Sidebar({
           placeholder="Max Price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
+          className="price-input"
         />
 
-        {invalidRange && (
-          <p className="error-text">
-            Min price cannot be greater than max price
-          </p>
-        )}
+        <button
+          className="clear-filter-btn"
+          onClick={() => {
+            setMinPrice("");
+            setMaxPrice("");
+          }}
+        >
+          Clear Price Filter
+        </button>
       </div>
-    </div>
+    </aside>
   );
 }
 

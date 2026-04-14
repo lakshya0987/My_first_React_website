@@ -1,72 +1,107 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
-const Cart = ({ cart, increaseQuantity, decreaseQuantity, totalPrice }) => {
-  const navigate = useNavigate();
+function Cart({
+  cart,
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart,
+  totalCartItems,
+  search,
+  setSearch,
+}) {
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   return (
-    <div className="cart-page">
-      <button className="back-btn" onClick={() => navigate("/")}>
-        ⬅ Continue Shopping
-      </button>
+    <div className="page-wrapper">
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        totalCartItems={totalCartItems}
+      />
 
-      <h2 className="cart-title">My Cart</h2>
-
-      {cart.length === 0 ? (
-        <div className="empty-cart">
-          <h3>Your cart is empty</h3>
-          <p>Add some products to see them here.</p>
+      <section className="cart-page">
+        <div className="cart-header">
+          <h1>Your Cart</h1>
+          <p>{totalCartItems} item(s) added</p>
         </div>
-      ) : (
-        <div className="cart-container">
-          <div className="cart-items">
-            {cart.map((item) => (
-              <div key={item.id} className="cart-item-card">
-                <div className="cart-item-image">
-                  <img src={item.thumbnail} alt={item.title} />
-                </div>
 
-                <div className="cart-item-details">
-                  <h3>{item.title}</h3>
-                  <p className="cart-price">₹{item.price}</p>
-                  <p className="cart-subtotal">
-                    Subtotal: ₹{item.price * item.quantity}
-                  </p>
-                </div>
+        {cart.length === 0 ? (
+          <div className="empty-page">
+            <h2>Your cart is empty</h2>
+            <Link to="/" className="back-home-btn">
+              Shop Now
+            </Link>
+          </div>
+        ) : (
+          <div className="cart-layout">
+            <div className="cart-items-section">
+              {cart.map((item) => (
+                <div className="cart-item" key={item.id}>
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="cart-item-image"
+                  />
 
-                <div className="cart-actions">
-                  <div className="cart-quantity-box">
+                  <div className="cart-item-details">
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                    <h4>₹{item.price}</h4>
+
+                    <div className="quantity-controls">
+                      <button onClick={() => decreaseQuantity(item.id)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => increaseQuantity(item.id)}>+</button>
+                    </div>
+                  </div>
+
+                  <div className="cart-item-right">
+                    <p className="cart-item-total">
+                      ₹{item.price * item.quantity}
+                    </p>
                     <button
-                      className="qty-btn"
-                      onClick={() => decreaseQuantity(item.id)}
+                      className="remove-btn"
+                      onClick={() => removeFromCart(item.id)}
                     >
-                      -
-                    </button>
-
-                    <span className="qty-number">{item.quantity}</span>
-
-                    <button
-                      className="qty-btn"
-                      onClick={() => increaseQuantity(item.id)}
-                    >
-                      +
+                      Remove
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="cart-summary">
-            <h3>Order Summary</h3>
-            <p>Total Items: {cart.reduce((a, b) => a + b.quantity, 0)}</p>
-            <p className="summary-total">Total Price: ₹{totalPrice}</p>
-            <button className="checkout-btn">Proceed to Checkout</button>
+            <div className="cart-summary">
+              <h2>Order Summary</h2>
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>₹{subtotal}</span>
+              </div>
+              <div className="summary-row">
+                <span>Delivery</span>
+                <span>Free</span>
+              </div>
+              <div className="summary-row total-row">
+                <span>Total</span>
+                <span>₹{subtotal}</span>
+              </div>
+
+              <button className="checkout-btn">Proceed to Checkout</button>
+              <Link to="/" className="continue-shopping-link">
+                Continue Shopping
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
+
+      <Footer />
     </div>
   );
-};
+}
 
 export default Cart;

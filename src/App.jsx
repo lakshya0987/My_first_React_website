@@ -10,6 +10,9 @@ import productsData from "./products";
 function App() {
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   const products = useMemo(() => {
     return productsData.map((product) => ({
@@ -27,10 +30,28 @@ function App() {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
-      product.title.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [products, search]);
+    return products.filter((product) => {
+      const matchesSearch = product.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const matchesRating =
+        selectedRating === 0 || product.rating >= selectedRating;
+
+      const matchesMinPrice =
+        minPrice === "" || product.price >= Number(minPrice);
+
+      const matchesMaxPrice =
+        maxPrice === "" || product.price <= Number(maxPrice);
+
+      return (
+        matchesSearch &&
+        matchesRating &&
+        matchesMinPrice &&
+        matchesMaxPrice
+      );
+    });
+  }, [products, search, selectedRating, minPrice, maxPrice]);
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -70,6 +91,12 @@ function App() {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const clearFilters = () => {
+    setSelectedRating(0);
+    setMinPrice("");
+    setMaxPrice("");
+  };
+
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -83,6 +110,14 @@ function App() {
             setSearch={setSearch}
             totalCartItems={totalCartItems}
             addToCart={addToCart}
+            cart={cart}
+            selectedRating={selectedRating}
+            setSelectedRating={setSelectedRating}
+            minPrice={minPrice}
+            setMinPrice={setMinPrice}
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            clearFilters={clearFilters}
           />
         }
       />
@@ -101,14 +136,13 @@ function App() {
       />
 
       <Route
-        path="/product/:id"
+        path="/cart"
         element={
-          <ProductDetails
-            products={products}
-            addToCart={addToCart}
-            totalCartItems={totalCartItems}
-            search={search}
-            setSearch={setSearch}
+          <Cart
+            cart={cart}
+            increaseQuantity={increaseQuantity}
+            decreaseQuantity={decreaseQuantity}
+            removeFromCart={removeFromCart}
           />
         }
       />

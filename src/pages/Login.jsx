@@ -1,22 +1,47 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Login() {
+function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const matchedUser = savedUsers.find(
+      (item) => item.email === email && item.password === password
+    );
+
+    if (!matchedUser) {
+      toast.error("Invalid email or password");
+      return;
+    }
+
+    const loggedInUser = {
+      name: matchedUser.name,
+      email: matchedUser.email,
+      rememberMe,
+    };
+
+    setUser(loggedInUser);
     toast.success("Login successful");
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1 className="login-title">Sign In</h1>
+        <h1 className="login-title">Login In</h1>
         <p className="login-subtitle">Enter your credentials to continue</p>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -64,12 +89,12 @@ function Login() {
           </div>
 
           <button type="submit" className="login-submit-btn">
-            Sign In
+            Login In
           </button>
         </form>
 
         <p className="login-footer-text">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link to="/signup" className="create-account-link">
             Create one
           </Link>

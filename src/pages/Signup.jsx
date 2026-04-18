@@ -12,11 +12,29 @@ function Signup() {
   const handleSignup = (e) => {
     e.preventDefault();
 
+    const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const alreadyExists = savedUsers.find((item) => item.email === email);
+
+    if (alreadyExists) {
+      toast.error("User already exists with this email");
+      return;
+    }
+
+    const newUser = {
+      name,
+      email,
+      password,
+    };
+
+    const updatedUsers = [...savedUsers, newUser];
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
     toast.success("Account created successfully!");
 
     setTimeout(() => {
       navigate("/login");
-    }, 1500);
+    }, 1000);
   };
 
   return (

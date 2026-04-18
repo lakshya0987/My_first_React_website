@@ -17,6 +17,8 @@ function Home({
   clearFilters,
   loading,
   error,
+  user,
+  handleLogout,
 }) {
   return (
     <div className="page-wrapper home-page-new">
@@ -33,8 +35,6 @@ function Home({
         </nav>
 
         <div className="home-search-cart">
-          
-
           <div className="home-search-box">
             <input
               type="text"
@@ -45,9 +45,18 @@ function Home({
             <span className="search-icon">🔍</span>
           </div>
 
-          <Link to="/login" className="home-login-btn">
-            Login
-          </Link>
+          {user ? (
+            <>
+              <span className="home-user-text">Hi, {user.name}</span>
+              <button className="home-logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="home-login-btn">
+              Login
+            </Link>
+          )}
 
           <Link to="/cart" className="home-cart-icon">
             🛒

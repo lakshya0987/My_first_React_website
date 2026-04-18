@@ -10,6 +10,8 @@ function ProductDetails({
   setSearch,
   loading,
   error,
+  user,
+  handleLogout,
 }) {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -52,9 +54,18 @@ function ProductDetails({
           <span className="search-icon">🔍</span>
         </div>
 
-        <Link to="/login" className="home-login-btn">
-          Login
-        </Link>
+        {user ? (
+          <>
+            <span className="home-user-text">Hi, {user.name}</span>
+            <button className="home-logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link to="/login" className="home-login-btn">
+            Login
+          </Link>
+        )}
 
         <Link to="/cart" className="home-cart-icon">
           🛒
@@ -108,9 +119,7 @@ function ProductDetails({
       : [product.image];
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
+    addToCart(product, quantity);
   };
 
   return (

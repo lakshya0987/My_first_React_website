@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-
 import { ToastContainer, toast } from "react-toastify";
+
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
@@ -11,8 +11,6 @@ import Signup from "./pages/Signup";
 
 function App() {
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState([]);
-
   const [selectedRating, setSelectedRating] = useState(0);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -20,6 +18,12 @@ function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [user, setUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("loggedInUser")) || null;
+  });
+
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -51,11 +55,9 @@ function App() {
             product.images?.[0] ||
             "",
           gallery:
-            product.gallery && product.gallery.length > 0
-              ? product.gallery
-              : product.images && product.images.length > 0
+            product.images && product.images.length > 0
               ? product.images
-              : [product.image || product.thumbnail || product.images?.[0] || ""],
+              : [product.thumbnail || ""],
         }));
 
         setProducts(normalizedProducts);
@@ -73,6 +75,24 @@ function App() {
 
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      const savedCart =
+        JSON.parse(localStorage.getItem(`cart_${user.email}`)) || [];
+      setCart(savedCart);
+    } else {
+      localStorage.removeItem("loggedInUser");
+      setCart([]);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(`cart_${user.email}`, JSON.stringify(cart));
+    }
+  }, [cart, user]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -98,24 +118,28 @@ function App() {
     });
   }, [products, search, selectedRating, minPrice, maxPrice]);
 
- const addToCart = (product) => {
-  const existing = cart.find((item) => item.id === product.id);
+  const addToCart = (product, qty = 1) => {
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
 
-  if (existing) {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
+    const existing = cart.find((item) => item.id === product.id);
 
-    toast.info("Quantity updated");
-  } else {
-    setCart((prev) => [...prev, { ...product, quantity: 1 }]);
-    toast.success("Added to cart");
-  }
-};
+    if (existing) {
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + qty }
+            : item
+        )
+      );
+      toast.info("Quantity updated");
+    } else {
+      setCart((prev) => [...prev, { ...product, quantity: qty }]);
+      toast.success("Added to cart");
+    }
+  };
 
   const increaseQuantity = (id) => {
     setCart((prev) =>
@@ -147,6 +171,11 @@ function App() {
     toast.info("Filters cleared");
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    toast.info("Logged out successfully");
+  };
+
   const totalCartItems = cart.reduce(
     (total, item) => total + item.quantity,
     0
@@ -174,6 +203,8 @@ function App() {
               clearFilters={clearFilters}
               loading={loading}
               error={error}
+              user={user}
+              handleLogout={handleLogout}
             />
           }
         />
@@ -189,6 +220,8 @@ function App() {
               setSearch={setSearch}
               loading={loading}
               error={error}
+              user={user}
+              handleLogout={handleLogout}
             />
           }
         />
@@ -205,14 +238,13 @@ function App() {
           }
         />
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
 
       <ToastContainer
         position="top-right"
         autoClose={2000}
-        hideProgressBar={false}
         newestOnTop={true}
         closeOnClick
         pauseOnHover

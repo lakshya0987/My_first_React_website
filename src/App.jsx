@@ -9,6 +9,7 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import Orders from "./pages/Orders";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -25,6 +26,7 @@ function App() {
   });
 
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -80,12 +82,18 @@ function App() {
   useEffect(() => {
     if (user) {
       localStorage.setItem("loggedInUser", JSON.stringify(user));
+
       const savedCart =
         JSON.parse(localStorage.getItem(`cart_${user.email}`)) || [];
       setCart(savedCart);
+
+      const savedOrders =
+        JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
+      setOrders(savedOrders);
     } else {
       localStorage.removeItem("loggedInUser");
       setCart([]);
+      setOrders([]);
     }
   }, [user]);
 
@@ -94,6 +102,12 @@ function App() {
       localStorage.setItem(`cart_${user.email}`, JSON.stringify(cart));
     }
   }, [cart, user]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
+    }
+  }, [orders, user]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -163,6 +177,34 @@ function App() {
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
     toast.error("Removed from cart");
+  };
+
+  const placeOrder = () => {
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    const totalAmount = cart.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+
+    const newOrder = {
+      id: Date.now(),
+      date: new Date().toLocaleString(),
+      items: cart,
+      totalAmount,
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
+    setCart([]);
+    toast.success("Order placed successfully");
   };
 
   const clearFilters = () => {
@@ -249,12 +291,14 @@ function App() {
               increaseQuantity={increaseQuantity}
               decreaseQuantity={decreaseQuantity}
               removeFromCart={removeFromCart}
+              placeOrder={placeOrder}
             />
           }
         />
 
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
+
         <Route
           path="/profile"
           element={
@@ -263,6 +307,11 @@ function App() {
               handleUpdateProfile={handleUpdateProfile}
             />
           }
+        />
+
+        <Route
+          path="/orders"
+          element={<Orders user={user} orders={orders} />}
         />
       </Routes>
 

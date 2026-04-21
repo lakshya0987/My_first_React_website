@@ -49,8 +49,12 @@ function Home({
           {user ? (
             <>
               <Link to="/profile" className="profile-icon-link">
-                  <img src={profileIcon} alt="Profile" className="profile-icon" />
-                </Link>
+                <img
+                  src={profileIcon}
+                  alt="Profile"
+                  className="profile-icon"
+                />
+              </Link>
               <span className="home-user-text">Hi, {user.name}</span>
               <button className="home-logout-btn" onClick={handleLogout}>
                 Logout
@@ -177,22 +181,24 @@ function Home({
                           Free delivery | 7 days return
                         </p>
 
-                        <h2 className="homepage-price">₹{product.price}</h2>
-
                         <p className="homepage-rating-text">
                           ⭐ {product.rating.toFixed(1)}
                         </p>
                       </div>
                     </Link>
 
-                    <button
-                      className={`homepage-add-cart-btn ${
-                        isAdded ? "added-btn" : ""
-                      }`}
-                      onClick={() => addToCart(product)}
-                    >
-                      {isAdded ? "Added to Cart" : "Add to Cart"}
-                    </button>
+                    <div className="price-cart-row">
+                      <h2 className="homepage-price">₹{product.price}</h2>
+
+                      <button
+                        className={`homepage-add-cart-btn ${
+                          isAdded ? "added-btn" : ""
+                        }`}
+                        onClick={() => addToCart(product)}
+                      >
+                        {isAdded ? "Added" : "Add"}
+                      </button>
+                    </div>
                   </div>
                 );
               })}

@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 import Footer from "../components/Footer";
-import profileIcon from "../assets/profile.png";
 
 function ProductDetails({
   products,
@@ -57,8 +56,8 @@ function ProductDetails({
 
         {user ? (
           <>
-            <Link to="/profile" className="profile-icon-link">
-                <img src={profileIcon} alt="Profile" className="profile-icon" />
+            <Link to="/profile" className="home-profile-btn">
+              Profile
             </Link>
             <span className="home-user-text">Hi, {user.name}</span>
             <button className="home-logout-btn" onClick={handleLogout}>
@@ -124,6 +123,25 @@ function ProductDetails({
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
+  };
+
+  const reviews = product.reviews || [];
+
+  const renderStars = (rating) => {
+    const fullStars = Math.round(Number(rating) || 0);
+
+    return (
+      <div className="review-stars">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={star <= fullStars ? "filled-star" : "empty-star"}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -268,6 +286,60 @@ function ProductDetails({
           </div>
         </section>
       )}
+
+      <section className="product-reviews-section">
+        <div className="product-reviews-header">
+          <h2>Customer Reviews</h2>
+        </div>
+
+        {reviews.length === 0 ? (
+          <div className="no-reviews-box">
+            <p>No reviews available for this product.</p>
+          </div>
+        ) : (
+          <div className="reviews-list">
+            {reviews.map((review, index) => (
+              <div className="review-card" key={index}>
+                <div className="review-user-row">
+                  <div className="review-avatar">
+                    {(review.reviewerName || review.name || "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+
+                  <div className="review-user-info">
+                    <h4>{review.reviewerName || review.name || "Customer"}</h4>
+                  </div>
+                </div>
+
+                <div className="review-rating-title">
+                  {renderStars(review.rating)}
+
+                  <h3>
+                    {review.title || "Good product"}
+                  </h3>
+                </div>
+
+                <p className="review-date">
+                  Reviewed on{" "}
+                  {review.date ||
+                    review.reviewDate ||
+                    "Recently"}
+                </p>
+
+                <p className="review-text">
+                  {review.comment || review.review || review.description}
+                </p>
+
+                <div className="review-actions">
+                  <button type="button">Helpful</button>
+                  <span>Report</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <Footer />
     </div>

@@ -32,8 +32,6 @@ function ProductsList({ products, addToCart, cart }) {
                   <div className="product-info">
                     <h3 className="product-title">{product.title}</h3>
 
-                    <p className="product-description">{product.description}</p>
-
                     <p className="extra-text">Free delivery | 7 days return</p>
 
                     <div className="product-bottom">

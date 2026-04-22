@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import profileIcon from "../assets/profile.png";
+import Sidebar from "../components/Sidebar";
 
 function Home({
   products,
@@ -20,6 +21,11 @@ function Home({
   error,
   user,
   handleLogout,
+  selectedCategory,
+  setSelectedCategory,
+  selectedTags,
+  setSelectedTags,
+  allProducts,
 }) {
   return (
     <div className="page-wrapper home-page-new">
@@ -76,66 +82,21 @@ function Home({
       </header>
 
       <main className="home-content-layout">
-        <aside className="home-sidebar">
-          <div className="sidebar-box">
-            <h3>Popular Shopping Ideas</h3>
-            <ul>
-              <li>Beauty</li>
-              <li>Fragrances</li>
-              <li>Furniture</li>
-              <li>Groceries</li>
-            </ul>
-          </div>
-
-          <div className="sidebar-box">
-            <h3>Customer Reviews</h3>
-
-            <div className="star-filter">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                  key={star}
-                  className={`star ${star <= selectedRating ? "active-star" : ""}`}
-                  onClick={() =>
-                    setSelectedRating(selectedRating === star ? 0 : star)
-                  }
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-
-            <p className="rating-label">
-              {selectedRating > 0
-                ? `${selectedRating} Star & Up`
-                : "Select Rating"}
-            </p>
-
-            <button className="clear-filter-btn" onClick={clearFilters}>
-              Clear All Filters
-            </button>
-          </div>
-
-          <div className="sidebar-box">
-            <h3>Price</h3>
-            <p>
-              ₹{minPrice || 0} - ₹{maxPrice || "Any"}
-            </p>
-
-            <input
-              type="number"
-              placeholder="Min Price"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-            />
-
-            <input
-              type="number"
-              placeholder="Max Price"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-            />
-          </div>
-        </aside>
+        
+        <Sidebar
+            products={allProducts}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            selectedRating={selectedRating}
+            setSelectedRating={setSelectedRating}
+            minPrice={minPrice}
+            setMinPrice={setMinPrice}
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            clearFilters={clearFilters}
+          />
 
         <section className="home-products-area">
           {loading ? (

@@ -13,6 +13,8 @@ import Orders from "./pages/Orders";
 
 function App() {
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedTags, setSelectedTags] = useState([]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -36,7 +38,7 @@ function App() {
         setLoading(true);
         setError("");
 
-        const response = await fetch("https://dummyjson.com/products", {
+        const response = await fetch("https://dummyjson.com/products?limit=100", {
           signal: controller.signal,
         });
 
@@ -61,6 +63,9 @@ function App() {
             product.images && product.images.length > 0
               ? product.images
               : [product.thumbnail || ""],
+          tags: product.tags || [],
+          category: product.category || "",
+          stock: Number(product.stock) || 0,
         }));
 
         setProducts(normalizedProducts);
@@ -115,6 +120,13 @@ function App() {
         .toLowerCase()
         .includes(search.toLowerCase());
 
+      const matchesCategory =
+        selectedCategory === "all" || product.category === selectedCategory;
+
+      const matchesTags =
+        selectedTags.length === 0 ||
+        selectedTags.some((tag) => product.tags?.includes(tag));
+
       const matchesRating =
         selectedRating === 0 || product.rating >= selectedRating;
 
@@ -126,50 +138,71 @@ function App() {
 
       return (
         matchesSearch &&
+        matchesCategory &&
+        matchesTags &&
         matchesRating &&
         matchesMinPrice &&
         matchesMaxPrice
       );
     });
-  }, [products, search, selectedRating, minPrice, maxPrice]);
+  }, [
+    products,
+    search,
+    selectedCategory,
+    selectedTags,
+    selectedRating,
+    minPrice,
+    maxPrice,
+  ]);
 
-const addToCart = (product, qty = 1) => {
-  if (!user) {
-    toast.error("Please login first");
-    return;
-  }
+  const addToCart = (product, qty = 1) => {
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
 
-  const stock = Number(product.stock) || 0;
+    const stock = Number(product.stock) || 0;
 
-  if (stock === 0) {
-    toast.error("Not available");
-    return;
-  }
+    if (stock === 0) {
+      toast.error("Not available");
+      return;
+    }
 
-  const existing = cart.find((item) => item.id === product.id);
-  const currentQty = existing ? existing.quantity : 0;
+    const existing = cart.find((item) => item.id === product.id);
+    const currentQty = existing ? existing.quantity : 0;
 
-  if (currentQty + qty > stock) {
-    toast.error("No more item is available");
-    return;
-  }
+    if (currentQty + qty > stock) {
+      toast.error("No more item is available");
+      return;
+    }
 
-  if (existing) {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + qty }
-          : item
-      )
-    );
-    toast.info("Quantity updated");
-  } else {
-    setCart((prev) => [...prev, { ...product, quantity: qty }]);
-    toast.success("Added to cart");
-  }
-};
+    if (existing) {
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + qty }
+            : item
+        )
+      );
+      toast.info("Quantity updated");
+    } else {
+      setCart((prev) => [...prev, { ...product, quantity: qty }]);
+      toast.success("Added to cart");
+    }
+  };
 
   const increaseQuantity = (id) => {
+    const targetItem = cart.find((item) => item.id === id);
+
+    if (!targetItem) return;
+
+    const stock = Number(targetItem.stock) || 0;
+
+    if (targetItem.quantity >= stock) {
+      toast.error("No more item is available");
+      return;
+    }
+
     setCart((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
@@ -221,6 +254,8 @@ const addToCart = (product, qty = 1) => {
   };
 
   const clearFilters = () => {
+    setSelectedCategory("all");
+    setSelectedTags([]);
     setSelectedRating(0);
     setMinPrice("");
     setMaxPrice("");
@@ -259,11 +294,16 @@ const addToCart = (product, qty = 1) => {
           element={
             <Home
               products={filteredProducts}
+              allProducts={products}
               search={search}
               setSearch={setSearch}
               totalCartItems={totalCartItems}
               addToCart={addToCart}
               cart={cart}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
               selectedRating={selectedRating}
               setSelectedRating={setSelectedRating}
               minPrice={minPrice}

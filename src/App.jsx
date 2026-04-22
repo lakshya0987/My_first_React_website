@@ -133,28 +133,41 @@ function App() {
     });
   }, [products, search, selectedRating, minPrice, maxPrice]);
 
-  const addToCart = (product, qty = 1) => {
-    if (!user) {
-      toast.error("Please login first");
-      return;
-    }
+const addToCart = (product, qty = 1) => {
+  if (!user) {
+    toast.error("Please login first");
+    return;
+  }
 
-    const existing = cart.find((item) => item.id === product.id);
+  const stock = Number(product.stock) || 0;
 
-    if (existing) {
-      setCart((prev) =>
-        prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + qty }
-            : item
-        )
-      );
-      toast.info("Quantity updated");
-    } else {
-      setCart((prev) => [...prev, { ...product, quantity: qty }]);
-      toast.success("Added to cart");
-    }
-  };
+  if (stock === 0) {
+    toast.error("Not available");
+    return;
+  }
+
+  const existing = cart.find((item) => item.id === product.id);
+  const currentQty = existing ? existing.quantity : 0;
+
+  if (currentQty + qty > stock) {
+    toast.error("No more item is available");
+    return;
+  }
+
+  if (existing) {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + qty }
+          : item
+      )
+    );
+    toast.info("Quantity updated");
+  } else {
+    setCart((prev) => [...prev, { ...product, quantity: qty }]);
+    toast.success("Added to cart");
+  }
+};
 
   const increaseQuantity = (id) => {
     setCart((prev) =>

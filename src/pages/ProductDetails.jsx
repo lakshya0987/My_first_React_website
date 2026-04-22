@@ -121,11 +121,18 @@ function ProductDetails({
       ? product.gallery
       : [product.image];
 
+  const reviews = product.reviews || [];
+  const stock = Number(product.stock) || 0;
+  const isOutOfStock = stock === 0;
+
   const handleAddToCart = () => {
+    if (isOutOfStock) {
+      addToCart(product, 1);
+      return;
+    }
+
     addToCart(product, quantity);
   };
-
-  const reviews = product.reviews || [];
 
   const renderStars = (rating) => {
     const fullStars = Math.round(Number(rating) || 0);
@@ -232,24 +239,49 @@ function ProductDetails({
               <input
                 type="number"
                 min="1"
+                max={stock || 1}
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value) || 1)}
+                onChange={(e) => {
+                  const value = Number(e.target.value) || 1;
+
+                  if (stock === 0) {
+                    setQuantity(1);
+                    return;
+                  }
+
+                  if (value > stock) {
+                    setQuantity(stock);
+                  } else if (value < 1) {
+                    setQuantity(1);
+                  } else {
+                    setQuantity(value);
+                  }
+                }}
+                disabled={isOutOfStock}
               />
-              <span className="qty-stock-text">
-                Stock: {product.stock ?? "Available"}
+
+              <span
+                className={`qty-stock-text ${isOutOfStock ? "out-of-stock-text" : ""}`}
+              >
+                {isOutOfStock ? "Not available" : `Stock: ${stock}`}
               </span>
             </div>
 
             <div className="single-product-buttons">
-              <button className="single-buy-btn" onClick={handleAddToCart}>
-                Buy Now
+              <button
+                className={`single-buy-btn ${isOutOfStock ? "disabled-cart-btn" : ""}`}
+                onClick={handleAddToCart}
+                disabled={isOutOfStock}
+              >
+                {isOutOfStock ? "Not available" : "Buy Now"}
               </button>
 
               <button
-                className="single-add-cart-btn"
+                className={`single-add-cart-btn ${isOutOfStock ? "disabled-cart-btn" : ""}`}
                 onClick={handleAddToCart}
+                disabled={isOutOfStock}
               >
-                Add to Cart
+                {isOutOfStock ? "Not available" : "Add to Cart"}
               </button>
 
               <button className="single-watchlist-btn">
@@ -314,17 +346,12 @@ function ProductDetails({
 
                 <div className="review-rating-title">
                   {renderStars(review.rating)}
-
-                  <h3>
-                    {review.title || "Good product"}
-                  </h3>
+                  <h3>{review.title || "Good product"}</h3>
                 </div>
 
                 <p className="review-date">
                   Reviewed on{" "}
-                  {review.date ||
-                    review.reviewDate ||
-                    "Recently"}
+                  {review.date || review.reviewDate || "Recently"}
                 </p>
 
                 <p className="review-text">

@@ -3469,3 +3469,34 @@ background: #ffcc00;
   color: #666;
   margin-bottom: 14px;
 }
+
+/* ===== CATEGORY CHECKBOX FIX ===== */
+
+.category-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.category-checkbox-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* force left alignment */
+  gap: 12px;
+  font-size: 16px;
+  color: #111;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.category-checkbox-item input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  order: 0; /* checkbox FIRST */
+}
+
+.category-checkbox-text {
+  order: 1; /* text AFTER checkbox */
+}

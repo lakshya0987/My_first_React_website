@@ -1,7 +1,7 @@
 function Sidebar({
   products,
-  selectedCategory,
-  setSelectedCategory,
+  selectedCategories,
+  setSelectedCategories,
   selectedTags,
   setSelectedTags,
   selectedRating,
@@ -16,6 +16,16 @@ function Sidebar({
 
   const tags = [...new Set(products.flatMap((item) => item.tags || []))].sort();
 
+  const handleCategoryToggle = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(
+        selectedCategories.filter((item) => item !== category)
+      );
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
   const handleTagToggle = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((item) => item !== tag));
@@ -28,31 +38,27 @@ function Sidebar({
     <aside className="home-sidebar">
       <div className="sidebar-box">
         <h3>Categories</h3>
-        <ul className="sidebar-filter-list">
-          <li
-            className={selectedCategory === "all" ? "active-filter-item" : ""}
-            onClick={() => setSelectedCategory("all")}
-          >
-            All Products
-          </li>
 
+       <div className="category-checkbox-list">
           {categories.map((category) => (
-            <li
-              key={category}
-              className={
-                selectedCategory === category ? "active-filter-item" : ""
-              }
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </li>
+            <label key={category} className="category-checkbox-item">
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCategoryToggle(category)}
+                className="category-checkbox-input"
+              />
+              <span className="category-checkbox-text">
+                {category.replace(/-/g, " ")}
+              </span>
+            </label>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div className="sidebar-box">
         <h3>Tags</h3>
-       <div className="sidebar-tags-wrap">
+        <div className="sidebar-tags-wrap">
           {tags.map((tag) => (
             <button
               key={tag}

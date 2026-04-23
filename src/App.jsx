@@ -13,7 +13,7 @@ import Orders from "./pages/Orders";
 
 function App() {
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [minPrice, setMinPrice] = useState("");
@@ -121,7 +121,8 @@ function App() {
         .includes(search.toLowerCase());
 
       const matchesCategory =
-        selectedCategory === "all" || product.category === selectedCategory;
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(product.category);
 
       const matchesTags =
         selectedTags.length === 0 ||
@@ -148,7 +149,7 @@ function App() {
   }, [
     products,
     search,
-    selectedCategory,
+    selectedCategories,
     selectedTags,
     selectedRating,
     minPrice,
@@ -254,7 +255,7 @@ function App() {
   };
 
   const clearFilters = () => {
-    setSelectedCategory("all");
+    setSelectedCategories([]);
     setSelectedTags([]);
     setSelectedRating(0);
     setMinPrice("");
@@ -300,8 +301,8 @@ function App() {
               totalCartItems={totalCartItems}
               addToCart={addToCart}
               cart={cart}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
               selectedTags={selectedTags}
               setSelectedTags={setSelectedTags}
               selectedRating={selectedRating}

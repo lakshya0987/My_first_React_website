@@ -21,8 +21,8 @@ function Home({
   error,
   user,
   handleLogout,
-  selectedCategory,
-  setSelectedCategory,
+  selectedCategories,
+  setSelectedCategories,
   selectedTags,
   setSelectedTags,
   allProducts,
@@ -82,21 +82,20 @@ function Home({
       </header>
 
       <main className="home-content-layout">
-        
         <Sidebar
-            products={allProducts}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            selectedRating={selectedRating}
-            setSelectedRating={setSelectedRating}
-            minPrice={minPrice}
-            setMinPrice={setMinPrice}
-            maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
-            clearFilters={clearFilters}
-          />
+          products={allProducts}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          clearFilters={clearFilters}
+        />
 
         <section className="home-products-area">
           {loading ? (
@@ -115,71 +114,74 @@ function Home({
           ) : (
             <div className="homepage-products-grid">
               {products.map((product) => {
-  const cartItem = cart.find((item) => item.id === product.id);
-  const currentQtyInCart = cartItem ? cartItem.quantity : 0;
-  const stock = Number(product.stock) || 0;
-  const isOutOfStock = stock === 0;
-  const isStockLimitReached = currentQtyInCart >= stock && stock > 0;
+                const cartItem = cart.find((item) => item.id === product.id);
+                const currentQtyInCart = cartItem ? cartItem.quantity : 0;
+                const stock = Number(product.stock) || 0;
+                const isOutOfStock = stock === 0;
+                const isStockLimitReached =
+                  currentQtyInCart >= stock && stock > 0;
 
-  return (
-    <div className="homepage-product-card" key={product.id}>
-      <Link
-        to={`/product/${product.id}`}
-        className="homepage-product-link"
-      >
-        <div className="homepage-product-image-box">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="homepage-product-image"
-          />
-        </div>
+                return (
+                  <div className="homepage-product-card" key={product.id}>
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="homepage-product-link"
+                    >
+                      <div className="homepage-product-image-box">
+                        <img
+                          src={product.image}
+                          alt={product.title}
+                          className="homepage-product-image"
+                        />
+                      </div>
 
-        <div className="homepage-product-content">
-          <h3>{product.title}</h3>
+                      <div className="homepage-product-content">
+                        <h3>{product.title}</h3>
 
-          <p className="homepage-product-description">
-            {product.description}
-          </p>
+                        <p className="homepage-product-description">
+                          {product.description}
+                        </p>
 
-          <p className="homepage-extra-text">
-            Free delivery | 7 days return
-          </p>
+                        <p className="homepage-extra-text">
+                          Free delivery | 7 days return
+                        </p>
 
-          <p
-            className={`homepage-stock-text ${
-              isOutOfStock ? "out-of-stock-text" : ""
-            }`}
-          >
-            {isOutOfStock ? "Not available" : `Stock: ${stock}`}
-          </p>
+                        <p
+                          className={`homepage-stock-text ${
+                            isOutOfStock ? "out-of-stock-text" : ""
+                          }`}
+                        >
+                          {isOutOfStock ? "Not available" : `Stock: ${stock}`}
+                        </p>
 
-          <p className="homepage-rating-text">
-            ⭐ {product.rating.toFixed(1)}
-          </p>
-        </div>
-      </Link>
+                        <p className="homepage-rating-text">
+                          ⭐ {product.rating.toFixed(1)}
+                        </p>
+                      </div>
+                    </Link>
 
-      <div className="price-cart-row">
-        <h2 className="homepage-price">₹{product.price}</h2>
+                    <div className="price-cart-row">
+                      <h2 className="homepage-price">₹{product.price}</h2>
 
-        <button
-          className={`homepage-add-cart-btn ${
-            isOutOfStock || isStockLimitReached ? "disabled-cart-btn" : ""
-          }`}
-          onClick={() => addToCart(product)}
-          disabled={isOutOfStock}
-        >
-          {isOutOfStock
-            ? "Not available"
-            : isStockLimitReached
-            ? "Max added"
-            : "Add"}
-        </button>
-      </div>
-    </div>
-  );
-})}
+                      <button
+                        className={`homepage-add-cart-btn ${
+                          isOutOfStock || isStockLimitReached
+                            ? "disabled-cart-btn"
+                            : ""
+                        }`}
+                        onClick={() => addToCart(product)}
+                        disabled={isOutOfStock || isStockLimitReached}
+                      >
+                        {isOutOfStock
+                          ? "Not available"
+                          : isStockLimitReached
+                          ? "Max added"
+                          : "Add"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </section>

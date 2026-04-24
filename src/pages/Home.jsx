@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import profileIcon from "../assets/profile.png";
@@ -27,6 +28,8 @@ function Home({
   setSelectedTags,
   allProducts,
 }) {
+  const [showFilters, setShowFilters] = useState(false);
+
   return (
     <div className="page-wrapper home-page-new">
       <header className="custom-home-navbar">
@@ -82,20 +85,41 @@ function Home({
       </header>
 
       <main className="home-content-layout">
-        <Sidebar
-          products={allProducts}
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          selectedRating={selectedRating}
-          setSelectedRating={setSelectedRating}
-          minPrice={minPrice}
-          setMinPrice={setMinPrice}
-          maxPrice={maxPrice}
-          setMaxPrice={setMaxPrice}
-          clearFilters={clearFilters}
-        />
+        <button
+          className="filter-toggle-btn"
+          onClick={() => setShowFilters(true)}
+        >
+          ☰ Filters
+        </button>
+
+        <div className={`sidebar-wrapper ${showFilters ? "show-sidebar" : ""}`}>
+          <div className="mobile-sidebar-header">
+            <h3>Filters</h3>
+            <button onClick={() => setShowFilters(false)}>✖</button>
+          </div>
+
+          <Sidebar
+            products={allProducts}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            selectedRating={selectedRating}
+            setSelectedRating={setSelectedRating}
+            minPrice={minPrice}
+            setMinPrice={setMinPrice}
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            clearFilters={clearFilters}
+          />
+        </div>
+
+        {showFilters && (
+          <div
+            className="filter-overlay"
+            onClick={() => setShowFilters(false)}
+          ></div>
+        )}
 
         <section className="home-products-area">
           {loading ? (

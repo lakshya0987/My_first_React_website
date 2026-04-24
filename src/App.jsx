@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import Orders from "./pages/Orders";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -29,6 +30,7 @@ function App() {
 
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -95,10 +97,15 @@ function App() {
       const savedOrders =
         JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
       setOrders(savedOrders);
+
+      const savedWishlist =
+        JSON.parse(localStorage.getItem(`wishlist_${user.email}`)) || [];
+      setWishlist(savedWishlist);
     } else {
       localStorage.removeItem("loggedInUser");
       setCart([]);
       setOrders([]);
+      setWishlist([]);
     }
   }, [user]);
 
@@ -113,6 +120,12 @@ function App() {
       localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
     }
   }, [orders, user]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlist));
+    }
+  }, [wishlist, user]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -190,6 +203,28 @@ function App() {
       setCart((prev) => [...prev, { ...product, quantity: qty }]);
       toast.success("Added to cart");
     }
+  };
+
+  const addToWishlist = (product) => {
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
+
+    const alreadyExist = wishlist.some((item) => item.id === product.id);
+
+    if (alreadyExist) {
+      toast.info("Already in wishlist");
+      return;
+    }
+
+    setWishlist((prev) => [...prev, product]);
+    toast.success("Added to wishlist");
+  };
+
+  const removeFromWishlist = (id) => {
+    setWishlist((prev) => prev.filter((item) => item.id !== id));
+    toast.error("Removed from wishlist");
   };
 
   const increaseQuantity = (id) => {
@@ -316,6 +351,8 @@ function App() {
               error={error}
               user={user}
               handleLogout={handleLogout}
+              wishlist={wishlist}
+              addToWishlist={addToWishlist}
             />
           }
         />
@@ -346,6 +383,18 @@ function App() {
               decreaseQuantity={decreaseQuantity}
               removeFromCart={removeFromCart}
               placeOrder={placeOrder}
+            />
+          }
+        />
+
+        <Route
+          path="/wishlist"
+          element={
+            <Wishlist
+              wishlist={wishlist}
+              removeFromWishlist={removeFromWishlist}
+              addToCart={addToCart}
+              user={user}
             />
           }
         />

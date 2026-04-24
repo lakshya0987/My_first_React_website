@@ -27,8 +27,10 @@ function Home({
   selectedTags,
   setSelectedTags,
   allProducts,
+  wishlist,
+  addToWishlist,
 }) {
-  const [showFilters, setShowFilters] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <div className="page-wrapper home-page-new">
@@ -64,10 +66,31 @@ function Home({
                   className="profile-icon"
                 />
               </Link>
-              <span className="home-user-text">Hi, {user.name}</span>
-              <button className="home-logout-btn" onClick={handleLogout}>
-                Logout
-              </button>
+
+              <div className="user-dropdown-wrapper">
+                <button
+                  className="home-user-name-btn"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                >
+                  {user.name} ▾
+                </button>
+
+                {showUserMenu && (
+                  <div className="user-dropdown-menu">
+                    <Link to="/profile">👤 My Profile</Link>
+                    <Link to="/orders">📦 Orders</Link>
+                    <Link to="/wishlist">
+                      ❤️ Wishlist{" "}
+                      {wishlist.length > 0 && (
+                        <span className="wishlist-menu-count">
+                          {wishlist.length}
+                        </span>
+                      )}
+                    </Link>
+                    <button onClick={handleLogout}>🚪 Logout</button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <Link to="/login" className="home-login-btn">
@@ -85,41 +108,20 @@ function Home({
       </header>
 
       <main className="home-content-layout">
-        <button
-          className="filter-toggle-btn"
-          onClick={() => setShowFilters(true)}
-        >
-          ☰ Filters
-        </button>
-
-        <div className={`sidebar-wrapper ${showFilters ? "show-sidebar" : ""}`}>
-          <div className="mobile-sidebar-header">
-            <h3>Filters</h3>
-            <button onClick={() => setShowFilters(false)}>✖</button>
-          </div>
-
-          <Sidebar
-            products={allProducts}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            selectedRating={selectedRating}
-            setSelectedRating={setSelectedRating}
-            minPrice={minPrice}
-            setMinPrice={setMinPrice}
-            maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
-            clearFilters={clearFilters}
-          />
-        </div>
-
-        {showFilters && (
-          <div
-            className="filter-overlay"
-            onClick={() => setShowFilters(false)}
-          ></div>
-        )}
+        <Sidebar
+          products={allProducts}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          clearFilters={clearFilters}
+        />
 
         <section className="home-products-area">
           {loading ? (
@@ -145,8 +147,14 @@ function Home({
                 const isStockLimitReached =
                   currentQtyInCart >= stock && stock > 0;
 
+                const isWishlisted = wishlist.some(
+                  (item) => item.id === product.id
+                );
+
                 return (
                   <div className="homepage-product-card" key={product.id}>
+                    
+
                     <Link
                       to={`/product/${product.id}`}
                       className="homepage-product-link"
@@ -186,6 +194,15 @@ function Home({
 
                     <div className="price-cart-row">
                       <h2 className="homepage-price">₹{product.price}</h2>
+
+                            <button
+                      className={`wishlist-heart-btn ${
+                        isWishlisted ? "wishlist-heart-active" : ""
+                      }`}
+                      onClick={() => addToWishlist(product)}
+                    >
+                      {isWishlisted ? "❤️" : "🤍"}
+                    </button>
 
                       <button
                         className={`homepage-add-cart-btn ${
